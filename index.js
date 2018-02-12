@@ -21,15 +21,15 @@ let cached = null;
 let getData = () => {
 	request(url, (err, data) => {
 		let parsed = JSON.parse(data.body);
-		if (parsed == null || parsed[1] == null || parsed[1].members == null) {
-			if (cached != null) {
+		if (!parsed || !parsed[1] || !parsed[1].members) {
+			if (cached) {
 				parsed = cached;
 				console.log("Data is null, using cache");
 
 				let user = parsed[1].members.find((userTest) => {
 					return userTest.pid == playerID;
 				});
-				if (user == null) throw new Error("Cannot find user!");
+				if (!user) throw new Error("Cannot find user!");
 				//let points = user.rk == "bt" ? user.eb : user.ev;
 
 				rpc.setActivity({
@@ -59,7 +59,7 @@ let getData = () => {
 				return userTest.pid == playerID;
 			});
 	
-			if (user == null) throw new Error("Cannot find user!");
+			if (!user) throw new Error("Cannot find user!");
 	
 			// Write to cache
 			fs.writeFile("./cache.json", JSON.stringify(parsed), (err) => {
