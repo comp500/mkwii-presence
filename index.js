@@ -6,7 +6,6 @@ const discordID = "";
 const updateTime = 5; // in seconds
 
 // DON'T CHANGE BELOW HERE
-let pointsBegin = 0 ;
 const request = require("request");
 const url = `https://wiimmfi.de/mkw/room/p${playerID}?m=json`;
 const DiscordRPC = require("discord-rpc");
@@ -18,6 +17,7 @@ const fs = require("fs");
 rpc.login(discordID).catch(console.error);
 
 let cached = null;
+let pointsBegin = 0;
 
 let getData = () => {
 	request(url, (err, data) => {
@@ -76,8 +76,12 @@ let getData = () => {
 			let raceStart = new Date((parsed[1].race_start + 2) * 1000);
 			let pointsDiscr = 0;
 
-			//Work out point discrepancy
-			if (pointsBegin == 0) {pointsBegin = points} else {pointsDiscr = points - pointsBegin};
+			// Work out point discrepancy
+			if (pointsBegin == 0) {
+				pointsBegin = points;
+			} else {
+				pointsDiscr = points - pointsBegin;
+			}
 	
 			rpc.setActivity({
 				details: `${user.names[0]} (${user.fc})`,
