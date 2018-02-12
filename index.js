@@ -1,6 +1,6 @@
 // CHANGE THESE
-const playerID = 0;
-const discordID = "";
+const playerID = 600108123;
+const discordID = "412637273683918850";
 
 // MAYBE CHANGE THIS
 const updateTime = 20; // in seconds
@@ -15,7 +15,7 @@ const rpc = new DiscordRPC.Client({
 
 rpc.login(discordID).catch(console.error);
 
-let cached;
+let cached = null;
 
 let getData = () => {
 	request(url, (err, data) => {
@@ -24,31 +24,56 @@ let getData = () => {
 			if (cached != null) {
 				parsed = cached;
 				console.log("Data is null, using cache");
+
+				let user = parsed[1].members.find((userTest) => {
+					return userTest.pid == playerID;
+				});
+				if (user == null) throw new Error("Cannot find user!");
+				//let points = user.rk == "bt" ? user.eb : user.ev;
+
+				rpc.setActivity({
+					details: `${user.names[0]} (${user.fc})`,
+					state: `In lobby`,
+					largeImageKey: "mkwii_large",
+					largeImageText: "Mario Kart Wii",
+					smallImageKey: "wiimmfi_small",
+					smallImageText: `Wiimmfi (${user.region})`,
+					instance: false
+				});
 			} else {
 				console.log("Data is null, no cache available");
-				return;
+
+				rpc.setActivity({
+					details: `Wiimmfi`,
+					state: `In lobby`,
+					largeImageKey: "mkwii_large",
+					largeImageText: "Mario Kart Wii",
+					smallImageKey: "wiimmfi_small",
+					smallImageText: `Wiimmfi`,
+					instance: false
+				});
 			}
+		} else {
+			let user = parsed[1].members.find((userTest) => {
+				return userTest.pid == playerID;
+			});
+	
+			if (user == null) throw new Error("Cannot find user!");
+	
+			let points = user.rk == "bt" ? user.eb : user.ev;
+			let raceStart = new Date((parsed[1].race_start + 2) * 1000);
+	
+			rpc.setActivity({
+				details: `${user.names[0]} (${user.fc})`,
+				state: `${points} points`,
+				startTimestamp: raceStart,
+				largeImageKey: "mkwii_large",
+				largeImageText: "Mario Kart Wii",
+				smallImageKey: "wiimmfi_small",
+				smallImageText: `Wiimmfi (${user.region})`,
+				instance: false
+			});
 		}
-
-		let user = parsed[1].members.find((userTest) => {
-			return userTest.pid == playerID;
-		});
-
-		if (user == null) throw new Error("Cannot find user!");
-
-		let points = user.rk == "bt" ? user.eb : user.ev;
-		let raceStart = new Date((parsed[1].race_start + 2) * 1000);
-
-		rpc.setActivity({
-			details: `${user.names[0]} (${user.fc})`,
-			state: `${points} points`,
-			startTimestamp: raceStart,
-			largeImageKey: "mkwii_large",
-			largeImageText: "Mario Kart Wii",
-			smallImageKey: "wiimmfi_small",
-			smallImageText: `Wiimmfi (${user.region})`,
-			instance: false
-		});
 
 		console.log("Updated activity!");
 	});
