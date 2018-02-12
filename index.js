@@ -1,6 +1,6 @@
 // CHANGE THESE
-const playerID = 600108123;
-const discordID = "412637273683918850";
+const playerID = 0;
+const discordID = "";
 
 // MAYBE CHANGE THIS
 const updateTime = 20; // in seconds
@@ -12,6 +12,7 @@ const DiscordRPC = require("discord-rpc");
 const rpc = new DiscordRPC.Client({
 	transport: 'ipc'
 });
+const fs = require("fs");
 
 rpc.login(discordID).catch(console.error);
 
@@ -60,6 +61,9 @@ let getData = () => {
 	
 			if (user == null) throw new Error("Cannot find user!");
 	
+			// Write to cache
+			fs.writeFile("./cache.json", JSON.stringify(data));
+
 			let points = user.rk == "bt" ? user.eb : user.ev;
 			let raceStart = new Date((parsed[1].race_start + 2) * 1000);
 	
@@ -85,3 +89,10 @@ rpc.on('ready', () => {
 
 	setInterval(getData, 1000 * updateTime);
 });
+
+fs.readFile("./cache.json", (err, data) => {
+	if (err) return;
+	if (data && cached == null) {
+		cached = JSON.parse(data);
+	}
+})
