@@ -1,0 +1,23 @@
+{
+  "name": "mkwii-presence",
+  "version": "1.0.0",
+  "description": "Rich Presence for Mario Kart Wii on Wiimmfi",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/comp500/mkwii-presence.git"
+  },
+  "author": "comp500",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/comp500/mkwii-presence/issues"
+  },
+  "homepage": "https://github.com/comp500/mkwii-presence#readme",
+  "dependencies": {
+    "discord-rpc": "^3.0.0-beta.8",
+    "request": "^2.83.0"
+  }
+}
