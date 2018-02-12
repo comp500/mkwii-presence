@@ -3,9 +3,10 @@ const playerID = 0;
 const discordID = "";
 
 // MAYBE CHANGE THIS
-const updateTime = 20; // in seconds
+const updateTime = 5; // in seconds
 
 // DON'T CHANGE BELOW HERE
+let pointsBegin = 0 ;
 const request = require("request");
 const url = `https://wiimmfi.de/mkw/room/p${playerID}?m=json`;
 const DiscordRPC = require("discord-rpc");
@@ -73,10 +74,14 @@ let getData = () => {
 			let points = user.rk == "bt" ? user.eb : user.ev;
 			let pointsAcr = user.rk == "bt" ? "BR" : "VR";
 			let raceStart = new Date((parsed[1].race_start + 2) * 1000);
+			let pointsDiscr = 0;
+
+			//Work out point discrepancy
+			if (pointsBegin == 0) {pointsBegin = points} else {pointsDiscr = points - pointsBegin};
 	
 			rpc.setActivity({
 				details: `${user.names[0]} (${user.fc})`,
-				state: `${points} ${pointsAcr}`,
+				state: `${points} ${pointsAcr} (${pointsDiscr})`,
 				startTimestamp: raceStart,
 				largeImageKey: "mkwii_large",
 				largeImageText: "Mario Kart Wii",
