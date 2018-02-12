@@ -18,6 +18,9 @@ rpc.login(discordID).catch(console.error);
 
 let cached = null;
 let pointsBegin = 0;
+let pointsPrevious = 0;
+let endMatch = false;
+let previousTime = 0;
 
 let getData = () => {
 	request(url, (err, data) => {
@@ -82,17 +85,42 @@ let getData = () => {
 			} else {
 				pointsDiscr = points - pointsBegin;
 			}
+
+			if (points != pointsPrevious && pointsPrevious != 0) {
+				// Match ended
+				endMatch = true;
+				previousTime = parsed[1].race_start;
+			}
+			pointsPrevious = points;
+
+			// Another match started
+			if (endMatch && previousTime != (parsed[1].race_start)) {
+				endMatch = false;
+			}
 	
-			rpc.setActivity({
-				details: `${user.names[0]} (${user.fc})`,
-				state: `${points} ${pointsAcr} (${pointsDiscr})`,
-				startTimestamp: raceStart,
-				largeImageKey: "mkwii_large",
-				largeImageText: "Mario Kart Wii",
-				smallImageKey: "wiimmfi_small",
-				smallImageText: `Wiimmfi (${user.region})`,
-				instance: false
-			});
+			if (endMatch) {
+				// If match ended, don't show timestamp
+				rpc.setActivity({
+					details: `${user.names[0]} (${user.fc})`,
+					state: `${points} ${pointsAcr} (${pointsDiscr})`,
+					largeImageKey: "mkwii_large",
+					largeImageText: "Mario Kart Wii",
+					smallImageKey: "wiimmfi_small",
+					smallImageText: `Wiimmfi (${user.region})`,
+					instance: false
+				});
+			} else {
+				rpc.setActivity({
+					details: `${user.names[0]} (${user.fc})`,
+					state: `${points} ${pointsAcr} (${pointsDiscr})`,
+					startTimestamp: raceStart,
+					largeImageKey: "mkwii_large",
+					largeImageText: "Mario Kart Wii",
+					smallImageKey: "wiimmfi_small",
+					smallImageText: `Wiimmfi (${user.region})`,
+					instance: false
+				});
+			}
 		}
 
 		console.log("Updated activity!");
