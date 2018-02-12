@@ -1,6 +1,6 @@
 // CHANGE THESE
-const playerID = 0;
-const discordID = "";
+const playerID = 600108123;
+const discordID = "412637273683918850";
 
 // MAYBE CHANGE THIS
 const updateTime = 20; // in seconds
@@ -62,7 +62,13 @@ let getData = () => {
 			if (user == null) throw new Error("Cannot find user!");
 	
 			// Write to cache
-			fs.writeFile("./cache.json", JSON.stringify(data));
+			fs.writeFile("./cache.json", JSON.stringify(data), (err) => {
+				if (err) {
+					console.error(err);
+				} else {
+					console.log("Saved to cache");
+				}
+			});
 
 			let points = user.rk == "bt" ? user.eb : user.ev;
 			let raceStart = new Date((parsed[1].race_start + 2) * 1000);
