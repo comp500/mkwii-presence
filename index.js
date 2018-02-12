@@ -1,6 +1,6 @@
 // CHANGE THESE
-const playerID = 600108123;
-const discordID = "412637273683918850";
+const playerID = 0;
+const discordID = "";
 
 // MAYBE CHANGE THIS
 const updateTime = 20; // in seconds
