@@ -99,13 +99,16 @@ let getData = () => {
 			}
 
 			// Add + to start if > 0
-			let pointsDiscrString = pointsDiscr > 0 ? `+${pointsDiscr}` : `${pointsDiscr}`;
+			let pointsDiscrString = pointsDiscr > 0 ? ` (+${pointsDiscr})` : ` (${pointsDiscr})`;
+			if (pointsDiscr == 0) {
+				pointsDiscrString = "";
+			}
 	
 			if (endMatch) {
 				// If match ended, don't show timestamp
 				rpc.setActivity({
 					details: `${user.names[0]} (${user.fc})`,
-					state: `${points} ${pointsAcr} (${pointsDiscrString})`,
+					state: `${points} ${pointsAcr}${pointsDiscrString}`,
 					largeImageKey: "mkwii_large",
 					largeImageText: "Mario Kart Wii",
 					smallImageKey: "wiimmfi_small",
@@ -115,7 +118,7 @@ let getData = () => {
 			} else {
 				rpc.setActivity({
 					details: `${user.names[0]} (${user.fc})`,
-					state: `${points} ${pointsAcr} (${pointsDiscrString})`,
+					state: `${points} ${pointsAcr}${pointsDiscrString}`,
 					startTimestamp: raceStart,
 					largeImageKey: "mkwii_large",
 					largeImageText: "Mario Kart Wii",
