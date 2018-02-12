@@ -1,6 +1,11 @@
+// CHANGE THESE
+const playerID = 0;
+const discordID = "";
 
-const updateTime = 100; // in seconds
+// MAYBE CHANGE THIS
+const updateTime = 20; // in seconds
 
+// DON'T CHANGE BELOW HERE
 const request = require("request");
 const url = `https://wiimmfi.de/mkw/room/p${playerID}?m=json`;
 const DiscordRPC = require("discord-rpc");
@@ -10,10 +15,20 @@ const rpc = new DiscordRPC.Client({
 
 rpc.login(discordID).catch(console.error);
 
+let cached;
+
 let getData = () => {
 	request(url, (err, data) => {
 		let parsed = JSON.parse(data.body);
-		if (parsed == null) throw new Error("Cannot find data!");
+		if (parsed == null || parsed[1] == null || parsed[1].members == null) {
+			if (cached != null) {
+				parsed = cached;
+				console.log("Data is null, using cache");
+			} else {
+				console.log("Data is null, no cache available");
+				return;
+			}
+		}
 
 		let user = parsed[1].members.find((userTest) => {
 			return userTest.pid == playerID;
@@ -22,14 +37,17 @@ let getData = () => {
 		if (user == null) throw new Error("Cannot find user!");
 
 		let points = user.rk == "bt" ? user.eb : user.ev;
+		let raceStart = new Date((parsed[1].race_start + 2) * 1000);
 
 		rpc.setActivity({
 			details: `${user.names[0]} (${user.fc})`,
 			state: `${points} points`,
-			startTimestamp: Date.now(),
-			largeImageKey: 'wiimmfi_large',
-			largeImageText: "Wiimmfi",
-			instance: false,
+			startTimestamp: raceStart,
+			largeImageKey: "mkwii_large",
+			largeImageText: "Mario Kart Wii",
+			smallImageKey: "wiimmfi_small",
+			smallImageText: `Wiimmfi (${user.region})`,
+			instance: false
 		});
 
 		console.log("Updated activity!");
