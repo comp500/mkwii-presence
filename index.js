@@ -6,6 +6,7 @@ const discordID = "";
 const updateTime = 20; // in seconds
 
 // DON'T CHANGE BELOW HERE
+const pointsAcr = "";
 const request = require("request");
 const url = `https://wiimmfi.de/mkw/room/p${playerID}?m=json`;
 const DiscordRPC = require("discord-rpc");
@@ -62,15 +63,10 @@ let getData = () => {
 			if (user == null) throw new Error("Cannot find user!");
 	
 			// Write to cache
-			fs.writeFile("./cache.json", JSON.stringify(parsed), (err) => {
-				if (err) {
-					console.error(err);
-				} else {
-					console.log("Saved to cache");
-				}
-			});
+			fs.writeFile("./cache.json", JSON.stringify(data));
 
 			let points = user.rk == "bt" ? user.eb : user.ev;
+			let pointsAcr = user.rk == "bt" ? "BR" : "VR";
 			let raceStart = new Date((parsed[1].race_start + 2) * 1000);
 	
 			rpc.setActivity({
