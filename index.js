@@ -6,7 +6,6 @@ const discordID = "";
 const updateTime = 20; // in seconds
 
 // DON'T CHANGE BELOW HERE
-const pointsAcr = "";
 const request = require("request");
 const url = `https://wiimmfi.de/mkw/room/p${playerID}?m=json`;
 const DiscordRPC = require("discord-rpc");
@@ -63,7 +62,13 @@ let getData = () => {
 			if (user == null) throw new Error("Cannot find user!");
 	
 			// Write to cache
-			fs.writeFile("./cache.json", JSON.stringify(data));
+			fs.writeFile("./cache.json", JSON.stringify(parsed), (err) => {
+				if (err) {
+					console.error(err);
+				} else {
+					console.log("Saved to cache");
+				}
+			});
 
 			let points = user.rk == "bt" ? user.eb : user.ev;
 			let pointsAcr = user.rk == "bt" ? "BR" : "VR";
@@ -71,7 +76,7 @@ let getData = () => {
 	
 			rpc.setActivity({
 				details: `${user.names[0]} (${user.fc})`,
-				state: `${points} points`,
+				state: `${points} ${pointsAcr}`,
 				startTimestamp: raceStart,
 				largeImageKey: "mkwii_large",
 				largeImageText: "Mario Kart Wii",
