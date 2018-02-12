@@ -62,7 +62,7 @@ let getData = () => {
 			if (user == null) throw new Error("Cannot find user!");
 	
 			// Write to cache
-			fs.writeFile("./cache.json", JSON.stringify(data), (err) => {
+			fs.writeFile("./cache.json", JSON.stringify(parsed), (err) => {
 				if (err) {
 					console.error(err);
 				} else {
