@@ -1,8 +1,8 @@
-const playerID = "";
-const discordID = "";
+
+const updateTime = 100; // in seconds
 
 const request = require("request");
-const url = `https://wiimmfi.de/mkw/list/${playerID}?m=json`;
+const url = `https://wiimmfi.de/mkw/room/p${playerID}?m=json`;
 const DiscordRPC = require("discord-rpc");
 const rpc = new DiscordRPC.Client({
 	transport: 'ipc'
@@ -10,22 +10,35 @@ const rpc = new DiscordRPC.Client({
 
 rpc.login(discordID).catch(console.error);
 
+let getData = () => {
+	request(url, (err, data) => {
+		let parsed = JSON.parse(data.body);
+		if (parsed == null) throw new Error("Cannot find data!");
+
+		let user = parsed[1].members.find((userTest) => {
+			return userTest.pid == playerID;
+		});
+
+		if (user == null) throw new Error("Cannot find user!");
+
+		let points = user.rk == "bt" ? user.eb : user.ev;
+
+		rpc.setActivity({
+			details: `${user.names[0]} (${user.fc})`,
+			state: `${points} points`,
+			startTimestamp: Date.now(),
+			largeImageKey: 'wiimmfi_large',
+			largeImageText: "Wiimmfi",
+			instance: false,
+		});
+
+		console.log("Updated activity!");
+	});
+};
+
 rpc.on('ready', () => {
 	console.log(`Connected to discord with id ${discordID}`);
-	rpc.setActivity({
-		details: `9000 battle points`,
-		state: `6000 versus points`,
-		startTimestamp: Date.now(),
-		endTimestamp: Date.now() + 10,
-		largeImageKey: 'test_falcon',
-		largeImageText: "Moo Moo Meadows",
-		smallImageKey: 'test_falcon',
-		smallImageText: "Worldwide",
-		instance: false,
-	});
-});// fc, ev, eb, names, 
-// rk,
+	getData();
 
-/*request(url, (data) => {
-
-});*/
+	setInterval(getData, 1000 * updateTime);
+});
