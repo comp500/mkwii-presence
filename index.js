@@ -95,4 +95,4 @@ fs.readFile("./cache.json", (err, data) => {
 	if (data && cached == null) {
 		cached = JSON.parse(data);
 	}
-})
+});
