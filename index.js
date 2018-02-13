@@ -3,14 +3,14 @@ const playerID = 0;
 const discordID = "";
 
 // MAYBE CHANGE THIS
-const updateTime = 5; // in seconds
+const updateTime = 20; // in seconds
 
 // DON'T CHANGE BELOW HERE
 const request = require("request");
 const url = `https://wiimmfi.de/mkw/room/p${playerID}?m=json`;
 const DiscordRPC = require("discord-rpc");
 const rpc = new DiscordRPC.Client({
-	transport: 'ipc'
+	transport: "ipc"
 });
 const fs = require("fs");
 
@@ -34,7 +34,7 @@ let getData = () => {
 					return userTest.pid == playerID;
 				});
 				if (!user) throw new Error("Cannot find user!");
-				//let points = user.rk == "bt" ? user.eb : user.ev;
+				// let points = user.rk == "bt" ? user.eb : user.ev;
 
 				rpc.setActivity({
 					details: `${user.names[0]} (${user.fc})`,
@@ -62,13 +62,13 @@ let getData = () => {
 			let user = parsed[1].members.find((userTest) => {
 				return userTest.pid == playerID;
 			});
-	
+
 			if (!user) throw new Error("Cannot find user!");
-	
+
 			// Write to cache
-			fs.writeFile("./cache.json", JSON.stringify(parsed), (err) => {
-				if (err) {
-					console.error(err);
+			fs.writeFile("./cache.json", JSON.stringify(parsed), (err2) => {
+				if (err2) {
+					console.error(err2);
 				} else {
 					console.log("Saved to cache");
 				}
@@ -103,7 +103,7 @@ let getData = () => {
 			if (pointsDiscr == 0) {
 				pointsDiscrString = "";
 			}
-	
+
 			if (endMatch) {
 				// If match ended, don't show timestamp
 				rpc.setActivity({
@@ -133,7 +133,7 @@ let getData = () => {
 	});
 };
 
-rpc.on('ready', () => {
+rpc.on("ready", () => {
 	console.log(`Connected to discord with id ${discordID}`);
 	getData();
 
